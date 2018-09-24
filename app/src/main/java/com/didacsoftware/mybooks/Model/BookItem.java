@@ -25,13 +25,34 @@ public class BookItem {
 
 
     // Cantidad de intems que aparecera en la lista
-    private static final int COUNT = 5;
+    //private static final int COUNT = 5;
 
+
+
+
+
+    // Fechas Temporales
+    static String sNuevaFecha1 = "01/02/2012";
+    static String sNuevaFecha2 = "05/07/2015";
+    static String sNuevaFecha3 = "03/10/2016";
+    static String sNuevaFecha4 = "24/04/2018";
+
+    // Date con la nueva fecha
+    static Date date1 = new Date(sNuevaFecha1);
+    static Date date2 = new Date(sNuevaFecha2);
+    static Date date3 = new Date(sNuevaFecha3);
+    static Date date4 = new Date(sNuevaFecha4);
+
+
+
+
+
+    // Datos temporales de los Items
     static {
-        // Add some sample items.
-        //for (int i = 1; i <= COUNT; i++) {
-        //    addItem(createBookDetalle(i));
-        //}
+        addItem(new BookDetalle(1,"Java Developer","DidacSoftware",date1,"Curso de Java", "URL"));
+        addItem(new BookDetalle(2,"C++ Developer","DidacSoftware",date2,"Curso de C++", "URL"));
+        addItem(new BookDetalle(3,"Pascal Developer","DidacSoftware",date3,"Curso de Pascal", "URL"));
+        addItem(new BookDetalle(4,"IDE Eclipse","DidacSoftware",date4,"Manual Eclipse", "URL"));
     }
 
     // Agrega los Items a los arrays
