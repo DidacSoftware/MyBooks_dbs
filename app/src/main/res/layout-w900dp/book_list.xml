@@ -28,7 +28,7 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.didacsoftware.mybooks.BookListActivity"
-        tools:listitem="@layout/book_list_content" />
+        tools:listitem="@layout/book_list_content_impar" />
 
     <FrameLayout
         android:id="@+id/book_detail_container"

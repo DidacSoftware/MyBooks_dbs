@@ -105,13 +105,50 @@ public class BookListActivity extends AppCompatActivity {
             mTwoPane = twoPane;
         }
 
+
+
+
+
+        // variable para contar la lista que se va agregando
+        int count = 1;
+
+        // Agrega la lista con los formatos pares e impares
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.book_list_content, parent, false);
-            return new ViewHolder(view);
+
+            // View para los pares
+            View viewPar = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.book_list_content_par, parent, false);
+
+            // View para los impares
+            View viewImpar = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.book_list_content_impar, parent, false);
+
+            // View return para definir pares o impares
+            View viewReturn=viewImpar;;
+
+
+
+
+
+            // Verificamos si es par o impar
+            if (count%2==0){
+                viewReturn=viewPar;
+
+            }else{
+                viewReturn=viewImpar;
+            }
+
+
+
+            return new ViewHolder(viewReturn);
         }
 
+
+
+
+
+        // Construye los items
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).id);
@@ -119,7 +156,15 @@ public class BookListActivity extends AppCompatActivity {
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
+
+
+            // Por cada item agregado suma 1
+            count +=1;
         }
+
+
+
+
 
         @Override
         public int getItemCount() {
