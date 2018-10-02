@@ -1,0 +1,34 @@
+[33mcommit f922e5ba9bff2a329dfb85c862bf01d34614dda1[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Diego <dbs10go@gmail.com>
+Date:   Sat Sep 29 23:15:51 2018 +0200
+
+    Agregado todos los archivos
+
+[33mcommit ff9181a174363a9e709df7e4d290b1b332fe943b[m
+Author: DidacSoftware <dbs10go@gmail.com>
+Date:   Mon Sep 24 03:33:04 2018 +0200
+
+    Tercera Version
+           Preparar datos de prueba
+           Modificar BookListActivity y BookListFragment
+    
+    Signed-off-by: DidacSoftware <dbs10go@gmail.com>
+
+[33mcommit 9d4b13aec7bf40f0bedf2a6a352717889774bb14[m
+Author: DidacSoftware <dbs10go@gmail.com>
+Date:   Mon Sep 24 02:16:50 2018 +0200
+
+    Segunda Version
+              Crear BookItem y book_list_content.xml para el diseño de pares e impares
+              Modificar BookItem, BookListActivity
+    
+    Signed-off-by: DidacSoftware <dbs10go@gmail.com>
+
+[33mcommit 7f2303a9f3017dbe1074b15762ab87325cef2f15[m
+Author: DidacSoftware <dbs10go@gmail.com>
+Date:   Mon Sep 24 01:23:47 2018 +0200
+
+    Primera Version
+              Crear Proyecto
+    
+    Signed-off-by: DidacSoftware <dbs10go@gmail.com>
