@@ -2,23 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ededed"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/id_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="Titulo"
-        android:textAppearance="?attr/textAppearanceListItem" />
 
-    <TextView
-        android:id="@+id/content"
+
+    <android.support.v7.widget.CardView
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="Autor"
-        android:gravity="right"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        card_view:cardElevation="10dp"
+        card_view:cardCornerRadius="16dp"
+        card_view:cardBackgroundColor="#d1e6e3">
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/id_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="Titulo"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="Autor"
+                android:gravity="right"
+                android:textAppearance="?attr/textAppearanceListItem" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
 </LinearLayout>
