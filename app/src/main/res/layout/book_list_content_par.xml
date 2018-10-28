@@ -7,7 +7,6 @@
     android:orientation="vertical">
 
 
-
     <android.support.v7.widget.CardView
 
         android:layout_width="match_parent"
@@ -18,10 +17,7 @@
         android:layout_marginBottom="16dp"
         card_view:cardElevation="10dp"
         card_view:cardCornerRadius="16dp"
-        card_view:cardBackgroundColor="#d1e6e3">
-
-
-
+        card_view:cardBackgroundColor="#C3C9EF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,7 +45,5 @@
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-
-
 
 </LinearLayout>

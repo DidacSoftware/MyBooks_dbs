@@ -1,21 +1,39 @@
 package com.didacsoftware.mybooks;
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.didacsoftware.mybooks.Model.BookItem;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +41,11 @@ import java.util.List;
  */
 public class BookListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private boolean mTwoPane;
+
+
+    DatabaseReference dbr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +62,8 @@ public class BookListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                mostrarNotificacion("hola","mensaj");
             }
         });
 
@@ -177,4 +197,123 @@ public class BookListActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    private void pv_BDFireBase(){
+
+
+        // Referencia de la base de datos con el que nos hemos conctado
+        dbr = FirebaseDatabase.getInstance().getReference("books");
+
+
+        dbr.addValueEventListener(new ValueEventListener() {
+
+            // se llama a este metodo cada vez que haya cambios en la bd
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                ArrayAdapter<String> arrayAdapter;
+                ArrayList<String> listado = new ArrayList<String>();
+
+
+                for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
+
+                   // model md =  dataSnapshot1.getValue(model.class);
+
+                   // String sAutor = md.getAuthor();
+                  //  listado.add(sAutor);
+                }
+
+
+               // arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,listado);
+               // lsv_Lista.setAdapter(arrayAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+        // Notificacion abriendoactivity
+        if (getIntent().getExtras() != null){
+            for (String key : getIntent().getExtras().keySet()){
+                String value = getIntent().getExtras().getString(key);
+                // colocar mas textos sin pderder los anteriores
+                //txv.append("\n" +key + ": " + value);
+            }
+        }
+
+
+
+
+
+
+
+        // Firabase Token
+        FirebaseInstanceId.getInstance().getInstanceId().
+                addOnSuccessListener( BookListActivity.this,
+                        new OnSuccessListener<InstanceIdResult>() {
+
+                            @Override
+                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                String newToken = instanceIdResult.getToken();
+
+                                Log.e("newToken",newToken);
+
+                                // txv.setText(instanceIdResult.getId().toString());
+
+                            }
+                        });
+    }
+
+
+    // Mostrar notificacion local o enviado desde Firebase
+    private void mostrarNotificacion(String title, String body) {
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+
+
+
+        // Necesario para versiones anteriores
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "esta notificacion", NotificationManager.IMPORTANCE_MAX);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Parte Channel");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+
+
+
+
+        // mostrar notificaciones en alerta de notificaciones
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setTicker("Hearty365")
+                //     .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentInfo("info del contenido");
+
+        notificationManager.notify(/*notification id*/1, notificationBuilder.build());
+
+    }
+
+
 }

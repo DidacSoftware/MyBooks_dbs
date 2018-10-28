@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.didacsoftware.mybooks">
-
+    <uses-permission
+        android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,6 +29,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.didacsoftware.mybooks.BookListActivity" />
         </activity>
+
+        <service
+            android:name=".FireBaseMessaging"
+            android:stopWithTask="false">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                </intent-filter>
+        </service>
     </application>
 
 </manifest>

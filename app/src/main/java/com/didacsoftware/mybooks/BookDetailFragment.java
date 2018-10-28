@@ -62,7 +62,6 @@ public class BookDetailFragment extends Fragment {
 
 
 
-
         // Formato de fecha
         SimpleDateFormat sdf
                 = new SimpleDateFormat ("dd.MM.yyyy");

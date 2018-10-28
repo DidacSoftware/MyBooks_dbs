@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "465579015404",
+    "firebase_url": "https://mybookscifo.firebaseio.com",
+    "project_id": "mybookscifo",
+    "storage_bucket": "mybookscifo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465579015404:android:055ffb3dec76734a",
+        "android_client_info": {
+          "package_name": "com.didacsoftware.mybooks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "465579015404-71esu2rif3qkquei69hhuemomtj8b0kf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.didacsoftware.mybooks",
+            "certificate_hash": "c2ecb50cc2fa7b81603300ad9516a511bf05872b"
+          }
+        },
+        {
+          "client_id": "465579015404-bq6eodbavnt7pupupkc65ebebd2rt3l1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_IEcw2vtoWprdRwj-oZiPV96b5KYLQ-o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "465579015404-bq6eodbavnt7pupupkc65ebebd2rt3l1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
