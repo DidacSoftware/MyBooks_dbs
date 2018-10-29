@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.didacsoftware.mybooks">
-    <uses-permission
-        android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,10 +34,12 @@
         <service
             android:name=".FireBaseMessaging"
             android:stopWithTask="false">
-                <intent-filter>
-                    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-                </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
         </service>
+
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

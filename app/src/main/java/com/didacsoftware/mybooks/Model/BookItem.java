@@ -2,6 +2,10 @@ package com.didacsoftware.mybooks.Model;
 
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +17,7 @@ import java.util.Map;
 public class BookItem {
 
 
+
     // Array lista para los items
     public static final List<BookItem.BookDetalle> ITEMS = new ArrayList<BookItem.BookDetalle>();
 
@@ -21,6 +26,7 @@ public class BookItem {
 
 
 
+    public static ArrayList<model> alModel;
 
 
 
@@ -49,11 +55,17 @@ public class BookItem {
 
     // Datos temporales de los Items
     static {
-        addItem(new BookDetalle(1,"Java Developer","DidacSoftware",date1,"Curso de Java", "URL"));
+      addItem(new BookDetalle(1,"Java Developer","DidacSoftware",date1,"Curso de Java", "URL"));
         addItem(new BookDetalle(2,"C++ Developer","DidacSoftware",date2,"Curso de C++", "URL"));
         addItem(new BookDetalle(3,"Pascal Developer","DidacSoftware",date3,"Curso de Pascal", "URL"));
         addItem(new BookDetalle(4,"IDE Eclipse","DidacSoftware",date4,"Manual Eclipse", "URL"));
+
+
     }
+
+
+
+
 
     // Agrega los Items a los arrays
     private static void addItem(BookItem.BookDetalle item) {
@@ -101,11 +113,38 @@ public class BookItem {
             this.dtDataPublicacion = dtDataPublicacion;
             this.sDescripcion = sDescripcion;
             this.sImageURL = sImageURL;
-        } 
-        
+        }
+
+        public int getiId() {
+            return iId;
+        }
+
+        public String getsTitulo() {
+            return sTitulo;
+        }
+
+        public String getsAutor() {
+            return sAutor;
+        }
+
+        public Date getDtDataPublicacion() {
+            return dtDataPublicacion;
+        }
+
+        public String getsDescripcion() {
+            return sDescripcion;
+        }
+
+        public String getsImageURL() {
+            return sImageURL;
+        }
+
         @Override
         public String toString() {
             return sTitulo;
         }
     }
+
+
+
 }

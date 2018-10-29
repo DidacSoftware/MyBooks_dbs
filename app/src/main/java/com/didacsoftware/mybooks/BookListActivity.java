@@ -18,13 +18,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.didacsoftware.mybooks.Model.BookItem;
+import com.didacsoftware.mybooks.Model.model;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,26 +52,89 @@ public class BookListActivity extends AppCompatActivity {
     private boolean mTwoPane;
 
 
+
     DatabaseReference dbr;
+    private FirebaseAuth mAuth;
+
+    ArrayList<model> almModel;
+    ListView lsv_Lista;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
+        lsv_Lista = findViewById(R.id.lsv_Lista);
+        mAuth = FirebaseAuth.getInstance();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        dbr = FirebaseDatabase.getInstance().getReference("books");
+
+        dbr.addValueEventListener(new ValueEventListener() {
+
+            // se llama a este metodo cada vez que haya cambios en la bd
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                model mdl=null;
+                almModel= new ArrayList<model>();
+
+                ArrayAdapter<String> arrayAdapter;
+                ArrayList<String> listado = new ArrayList<String>();
+
+
+                //ContentValues values=new ContentValues();
+                for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
+
+                    mdl = new model();
+                    model md =  dataSnapshot1.getValue(model.class);
+
+                    // values.put("author",md.getAuthor());
+                    //String sAutor = md.getAuthor()+md.getDescription();
+
+                    //mdl.setAuthor(md.getAuthor());
+
+                    almModel.add(md);
+                    //listado.add(sAutor);
+                }
+
+
+
+                BookItem.alModel =almModel;
+
+                for(int i=0;i<almModel.size();i++){
+                    listado.add(almModel.get(i).getAuthor()+" - "
+                            +almModel.get(i).getDescription()+"\n"+almModel.get(i).getTitle());
+                }
+
+                arrayAdapter = new ArrayAdapter<String>(BookListActivity.this,android.R.layout.simple_list_item_1,listado);
+                lsv_Lista.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                mostrarNotificacion("hola","mensaj");
+
+                Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
+                startActivity(intent);
+
             }
         });
 
@@ -81,6 +152,7 @@ public class BookListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+       // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, BookItem.ITEMS, mTwoPane));
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, BookItem.ITEMS, mTwoPane));
     }
 
@@ -181,6 +253,7 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
+        //
         @Override
         public int getItemCount() {
             return mValues.size();
@@ -197,6 +270,41 @@ public class BookListActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+
+    // Menu principal [inicio]
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu_principal){
+
+        getMenuInflater().inflate(R.menu.menu_principal, menu_principal);
+        return true;
+    }
+
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menu_seleccionado){
+        int iId = menu_seleccionado.getItemId();
+
+        if (iId == R.id.mnu_login){
+            Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        if (iId == R.id.mnu_configuracion){
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(menu_seleccionado);
+    }
+    // Menu principal [fin]
+
+
 
 
 
@@ -253,8 +361,6 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
-
-
         // Firabase Token
         FirebaseInstanceId.getInstance().getInstanceId().
                 addOnSuccessListener( BookListActivity.this,
@@ -271,6 +377,9 @@ public class BookListActivity extends AppCompatActivity {
                             }
                         });
     }
+
+
+
 
 
     // Mostrar notificacion local o enviado desde Firebase
@@ -313,6 +422,31 @@ public class BookListActivity extends AppCompatActivity {
 
         notificationManager.notify(/*notification id*/1, notificationBuilder.build());
 
+    }
+
+
+
+
+
+  // verifica si esta logueado
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser!=null){
+
+            Toast.makeText(BookListActivity.this, "Conectado",
+                    Toast.LENGTH_SHORT).show();
+            fab.setImageResource(R.drawable.ic_identificacion_verificada);
+
+        }else{
+            Toast.makeText(BookListActivity.this, "DesConectado",
+                    Toast.LENGTH_SHORT).show();
+            fab.setImageResource(R.drawable.ic_identificacion_no_verificada);
+        }
     }
 
 
