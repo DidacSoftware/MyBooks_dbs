@@ -141,6 +141,14 @@ public class BookListActivity extends AppCompatActivity {
                     //    Void[] params = null;
                       //  asyncTask.execute(params);
 
+                        if (findViewById(R.id.book_detail_container) != null) {
+
+                            mTwoPane = true;
+                        }
+
+                        View recyclerView = findViewById(R.id.book_list);
+                        assert recyclerView != null;
+                        setupRecyclerView((RecyclerView) recyclerView);
                         Toast.makeText(getApplicationContext(),"este mensaje",Toast.LENGTH_SHORT).show();
                         swipeRefreshLayout.setRefreshing(false);
                     }
