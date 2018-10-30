@@ -6,11 +6,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +31,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
+import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
+import com.didacsoftware.mybooks.BDSQLite.GestionBD_Temp;
 import com.didacsoftware.mybooks.Model.BookItem;
 import com.didacsoftware.mybooks.Model.model;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,19 +59,33 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     DatabaseReference dbr;
     private FirebaseAuth mAuth;
 
     ArrayList<model> almModel;
-    ListView lsv_Lista;
+    ListView lsvLista;
+
+    ConexionSQLiteHelper conn;
+    ArrayList<String> DetalleBooks;
+    public static ArrayList<model> ListaBooks;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
-        lsv_Lista = findViewById(R.id.lsv_Lista);
+
+
+
+        lsvLista= findViewById(R.id.lsvLista);
         mAuth = FirebaseAuth.getInstance();
+
+        conn=new ConexionSQLiteHelper(getApplicationContext(),"bd_basedatos",null,1);
+
+        consultarListaBooks();
 
         dbr = FirebaseDatabase.getInstance().getReference("books");
 
@@ -75,31 +95,18 @@ public class BookListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                model mdl=null;
+
                 almModel= new ArrayList<model>();
 
                 ArrayAdapter<String> arrayAdapter;
                 ArrayList<String> listado = new ArrayList<String>();
-
-
-                //ContentValues values=new ContentValues();
                 for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
 
-                    mdl = new model();
                     model md =  dataSnapshot1.getValue(model.class);
 
-                    // values.put("author",md.getAuthor());
-                    //String sAutor = md.getAuthor()+md.getDescription();
-
-                    //mdl.setAuthor(md.getAuthor());
-
                     almModel.add(md);
-                    //listado.add(sAutor);
+
                 }
-
-
-
-                BookItem.alModel =almModel;
 
                 for(int i=0;i<almModel.size();i++){
                     listado.add(almModel.get(i).getAuthor()+" - "
@@ -107,14 +114,42 @@ public class BookListActivity extends AppCompatActivity {
                 }
 
                 arrayAdapter = new ArrayAdapter<String>(BookListActivity.this,android.R.layout.simple_list_item_1,listado);
-                lsv_Lista.setAdapter(arrayAdapter);
+                //lsvLista.setAdapter(arrayAdapter);
+
+                ListaBooks=almModel;
+
             }
+
+
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        //pv_FireBase();
+
+        //String sFB = String.valueOf(almModel.size());
+        //this.setTitle(" FB: "+String.valueOf(almModel.size())+" SQLite: "+String.valueOf(ListaBooks.size()));
+        //this.setTitle(sFB);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                       // asyncTask = new BackgroundTask();
+                    //    Void[] params = null;
+                      //  asyncTask.execute(params);
+
+                        Toast.makeText(getApplicationContext(),"este mensaje",Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                });
+
+
+
+
 
 
 
@@ -139,10 +174,7 @@ public class BookListActivity extends AppCompatActivity {
         });
 
         if (findViewById(R.id.book_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
+
             mTwoPane = true;
         }
 
@@ -151,8 +183,50 @@ public class BookListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
+
+
+
+
+    // [inicio] .- FireBase
+    private void pv_FireBase() {
+
+        dbr = FirebaseDatabase.getInstance().getReference("books");
+
+        dbr.addValueEventListener(new ValueEventListener() {
+
+            // se llama a este metodo cada vez que haya cambios en la bd
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                almModel= new ArrayList<model>();
+
+
+                for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
+
+                    model md =  dataSnapshot1.getValue(model.class);
+
+                    almModel.add(md);
+
+                }
+
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+
+    }
+    // [fin] .- FireBase
+
+
+
+
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-       // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, BookItem.ITEMS, mTwoPane));
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, BookItem.ITEMS, mTwoPane));
     }
 
@@ -160,6 +234,7 @@ public class BookListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final BookListActivity mParentActivity;
+        //private final List<BookItem.BookDetalle> mValues;
         private final List<BookItem.BookDetalle> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -256,7 +331,8 @@ public class BookListActivity extends AppCompatActivity {
         //
         @Override
         public int getItemCount() {
-            return mValues.size();
+                    return mValues.size();
+          // return mValues.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -299,84 +375,18 @@ public class BookListActivity extends AppCompatActivity {
 
             return true;
         }
+        if (iId == R.id.mnu_gestionar_bd){
+
+            Intent intent = new Intent(BookListActivity.this, GestionBD_Temp.class);
+            startActivity(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(menu_seleccionado);
     }
     // Menu principal [fin]
 
 
-
-
-
-    private void pv_BDFireBase(){
-
-
-        // Referencia de la base de datos con el que nos hemos conctado
-        dbr = FirebaseDatabase.getInstance().getReference("books");
-
-
-        dbr.addValueEventListener(new ValueEventListener() {
-
-            // se llama a este metodo cada vez que haya cambios en la bd
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                ArrayAdapter<String> arrayAdapter;
-                ArrayList<String> listado = new ArrayList<String>();
-
-
-                for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
-
-                   // model md =  dataSnapshot1.getValue(model.class);
-
-                   // String sAutor = md.getAuthor();
-                  //  listado.add(sAutor);
-                }
-
-
-               // arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,listado);
-               // lsv_Lista.setAdapter(arrayAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-        // Notificacion abriendoactivity
-        if (getIntent().getExtras() != null){
-            for (String key : getIntent().getExtras().keySet()){
-                String value = getIntent().getExtras().getString(key);
-                // colocar mas textos sin pderder los anteriores
-                //txv.append("\n" +key + ": " + value);
-            }
-        }
-
-
-
-
-
-        // Firabase Token
-        FirebaseInstanceId.getInstance().getInstanceId().
-                addOnSuccessListener( BookListActivity.this,
-                        new OnSuccessListener<InstanceIdResult>() {
-
-                            @Override
-                            public void onSuccess(InstanceIdResult instanceIdResult) {
-                                String newToken = instanceIdResult.getToken();
-
-                                Log.e("newToken",newToken);
-
-                                // txv.setText(instanceIdResult.getId().toString());
-
-                            }
-                        });
-    }
 
 
 
@@ -450,4 +460,58 @@ public class BookListActivity extends AppCompatActivity {
     }
 
 
+
+
+    // [inicio] Gestion BaseDatos SQLite
+    private void consultarListaBooks() {
+
+        SQLiteDatabase db=conn.getReadableDatabase();
+
+        model mdl = null;
+
+        ListaBooks = new ArrayList<model>();
+
+        Cursor cursor=db.rawQuery("SELECT * FROM "+ CampoTabla.TABLA_BOOKS,null);
+
+        while (cursor.moveToNext()){
+            mdl=new model();
+            mdl.setAuthor(cursor.getString(1));
+            mdl.setDescription(cursor.getString(2));
+            mdl.setPublication_date(cursor.getString(3));
+            mdl.setTitle(cursor.getString(4));
+            mdl.setUrl_image(cursor.getString(5));
+
+            //Log.i("id",persona.getiId().toString());
+            //Log.i("Nombre",persona.getsNombre());
+            // Log.i("Tel",persona.getsTelefono());
+
+            ListaBooks.add(mdl);
+
+        }
+
+        obtenerLista();
+
+    }
+
+
+    private void obtenerLista() {
+
+        DetalleBooks=new ArrayList<String>();
+
+
+
+        for(int i=0;i<ListaBooks.size();i++){
+            DetalleBooks.add("Autor :.- "
+                    +ListaBooks.get(i).getAuthor()+"\n.\n Title:.- "
+                    +ListaBooks.get(i).getTitle()+"\n.\n Public:.- "
+                    +ListaBooks.get(i).getPublication_date()+"\n.\n Url:.- "
+                    +ListaBooks.get(i).getUrl_image()+"\n.\n desc"
+                    +ListaBooks.get(i).getDescription());
+
+
+        }
+
+
+    }
+    // [fin] Gestion BaseDatos SQLite
 }
