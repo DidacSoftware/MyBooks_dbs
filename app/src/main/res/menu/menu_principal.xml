@@ -6,6 +6,9 @@
     <item android:id="@+id/mnu_login"
         android:title="Login"/>
 
+    <item android:id="@+id/mnu_gestionar_bd"
+        android:title="Gestionar BD"/>
+
     <item android:id="@+id/mnu_configuracion"
         android:title="Configuración"/>
 </menu>

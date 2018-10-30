@@ -2,6 +2,15 @@ package com.didacsoftware.mybooks.Model;
 
 
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
+
+import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
+import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
+import com.didacsoftware.mybooks.BookListActivity;
+import com.didacsoftware.mybooks.Global;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,15 +27,16 @@ public class BookItem {
 
 
 
+
     // Array lista para los items
-    public static final List<BookItem.BookDetalle> ITEMS = new ArrayList<BookItem.BookDetalle>();
+    public static final List<BookDetalle> ITEMS = new ArrayList<BookDetalle>();
 
     // HashMap para los detalles
-    public static final Map<String, BookItem.BookDetalle> ITEM_MAP = new HashMap<String, BookItem.BookDetalle>();
+    public static final Map<String, BookDetalle> ITEM_MAP = new HashMap<String, BookDetalle>();
 
 
-
-    public static ArrayList<model> alModel;
+    static BookListActivity alListaBooks;
+    //public static List<model> alModel;
 
 
 
@@ -53,12 +63,25 @@ public class BookItem {
 
 
 
-    // Datos temporales de los Items
+    //
     static {
-      addItem(new BookDetalle(1,"Java Developer","DidacSoftware",date1,"Curso de Java", "URL"));
+    /* addItem(new BookDetalle(1,BookListActivity.ListaBooks.get(1).getTitle(),BookListActivity.ListaBooks.get(1).getAuthor(),date1,"Curso de Java", "URL"));
         addItem(new BookDetalle(2,"C++ Developer","DidacSoftware",date2,"Curso de C++", "URL"));
         addItem(new BookDetalle(3,"Pascal Developer","DidacSoftware",date3,"Curso de Pascal", "URL"));
         addItem(new BookDetalle(4,"IDE Eclipse","DidacSoftware",date4,"Manual Eclipse", "URL"));
+
+*/
+
+    for (int i =0;i<alListaBooks.ListaBooks.size();i++){
+
+        addItem(new BookDetalle(i,alListaBooks.ListaBooks.get(i).getTitle(),
+                alListaBooks.ListaBooks.get(i).getAuthor(),
+                date4,
+                alListaBooks.ListaBooks.get(i).getDescription(),
+                alListaBooks.ListaBooks.get(i).getUrl_image()));
+    }
+
+
 
 
     }
@@ -67,8 +90,9 @@ public class BookItem {
 
 
 
+
     // Agrega los Items a los arrays
-    private static void addItem(BookItem.BookDetalle item) {
+    private static void addItem(BookDetalle item) {
         ITEMS.add(item);
         ITEM_MAP.put(String.valueOf(item.iId), item);
     }

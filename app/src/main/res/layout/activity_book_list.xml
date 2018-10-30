@@ -8,7 +8,6 @@
     tools:context=".BookListActivity">
 
 
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -23,15 +22,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <ListView
-            android:id="@+id/lsv_Lista"
+            android:id="@+id/lsvLista"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
+
         <include layout="@layout/book_list" />
     </FrameLayout>
 
