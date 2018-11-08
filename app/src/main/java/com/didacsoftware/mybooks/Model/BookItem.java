@@ -45,7 +45,7 @@ public class BookItem {
 
 
 
-
+/*
 
     // Fechas Temporales
     static String sNuevaFecha1 = "01/02/2012";
@@ -58,7 +58,7 @@ public class BookItem {
     static Date date2 = new Date(sNuevaFecha2);
     static Date date3 = new Date(sNuevaFecha3);
     static Date date4 = new Date(sNuevaFecha4);
-
+*/
 
 
 
@@ -74,9 +74,14 @@ public class BookItem {
 
     for (int i =0;i<alListaBooks.ListaBooks.size();i++){
 
+        Date date;
+        date = new Date(alListaBooks.ListaBooks.get(i).getPublication_date());
         addItem(new BookDetalle(i,alListaBooks.ListaBooks.get(i).getTitle(),
+
+
+
                 alListaBooks.ListaBooks.get(i).getAuthor(),
-                date4,
+                date,
                 alListaBooks.ListaBooks.get(i).getDescription(),
                 alListaBooks.ListaBooks.get(i).getUrl_image()));
     }

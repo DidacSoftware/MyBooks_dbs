@@ -35,4 +35,18 @@
         android:layout_height="wrap_content"
         android:text="Registrar usuario" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Podras registrarte y hacer login"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+    <Button
+        android:id="@+id/lgn_btnIr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ir a Lista de libros" />
+
 </LinearLayout>

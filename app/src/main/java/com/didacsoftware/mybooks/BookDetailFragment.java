@@ -1,7 +1,10 @@
 package com.didacsoftware.mybooks;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.didacsoftware.mybooks.Model.BookItem;
+import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 
 /**
@@ -69,16 +78,36 @@ public class BookDetailFragment extends Fragment {
 
 
 
-
+    /*    Picasso.with(getContext())
+                .load("http://didacsoftware.com/onewebstatic/c565166c1a-Imagen-Programas-NetBeans.png")
+                // en caso de que no descargue la imagen mostrara esto
+                .error(R.drawable.ic_identificacion_no_verificada)
+                // para que se adapte al image view
+                .fit()
+                .centerInside()
+                .into(imgImagen);
+*/
 
         if (mItem != null) {
 
             ((TextView) rootView.findViewById(R.id.bkDt_txvAutor)).setText(mItem.sAutor);
             ((TextView) rootView.findViewById(R.id.bkDt_txvFecha)).setText(sDate);
             ((TextView) rootView.findViewById(R.id.bkDt_Descripcion)).setText(mItem.sDescripcion);
+            //((ImageView) rootView.findViewById(R.id.imgBooks)).setImageResource();
+
+
+            Picasso.with(getContext())
+                    .load(mItem.getsImageURL())
+                    // en caso de que no descargue la imagen mostrara esto
+                    .error(R.drawable.ic_identificacion_no_verificada)
+                    // para que se adapte al image view
+                    .fit()
+                    .centerInside()
+                    .into(((ImageView) rootView.findViewById(R.id.imgBooks)));
 
         }
 
         return rootView;
     }
+
 }

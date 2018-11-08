@@ -1,10 +1,13 @@
 package com.didacsoftware.mybooks;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,7 +17,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +77,7 @@ public class BookListActivity extends AppCompatActivity {
     ConexionSQLiteHelper conn;
     ArrayList<String> DetalleBooks;
     public static ArrayList<model> ListaBooks;
+    public static ArrayList<model> ListaBooksNew;
 
 
 
@@ -79,13 +87,17 @@ public class BookListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_list);
 
 
+        this.hasWindowFocus();
 
         lsvLista= findViewById(R.id.lsvLista);
         mAuth = FirebaseAuth.getInstance();
 
         conn=new ConexionSQLiteHelper(getApplicationContext(),"bd_basedatos",null,1);
 
-        consultarListaBooks();
+        //consultarListaBooks();
+
+
+
 
         dbr = FirebaseDatabase.getInstance().getReference("books");
 
@@ -116,7 +128,7 @@ public class BookListActivity extends AppCompatActivity {
                 arrayAdapter = new ArrayAdapter<String>(BookListActivity.this,android.R.layout.simple_list_item_1,listado);
                 //lsvLista.setAdapter(arrayAdapter);
 
-                ListaBooks=almModel;
+                ListaBooksNew=almModel;
 
             }
 
@@ -126,6 +138,14 @@ public class BookListActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+
+        consultarListaBooks();
+
+
+
+
+
+
         //pv_FireBase();
 
         //String sFB = String.valueOf(almModel.size());
@@ -133,27 +153,35 @@ public class BookListActivity extends AppCompatActivity {
         //this.setTitle(sFB);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                       // asyncTask = new BackgroundTask();
-                    //    Void[] params = null;
-                      //  asyncTask.execute(params);
+       try{
+           swipeRefreshLayout.setOnRefreshListener(
+                   new SwipeRefreshLayout.OnRefreshListener() {
+                       @Override
+                       public void onRefresh() {
+                           // asyncTask = new BackgroundTask();
+                           //    Void[] params = null;
+                           //  asyncTask.execute(params);
 
-                        if (findViewById(R.id.book_detail_container) != null) {
+                           if (findViewById(R.id.book_detail_container) != null) {
 
-                            mTwoPane = true;
-                        }
+                               mTwoPane = true;
+                           }else{
+                               View recyclerView = findViewById(R.id.book_list);
+                               assert recyclerView != null;
+                               setupRecyclerView((RecyclerView) recyclerView);
+                               Toast.makeText(getApplicationContext(),"este mensaje",Toast.LENGTH_SHORT).show();
+                               swipeRefreshLayout.setRefreshing(false);
+                           }
 
-                        View recyclerView = findViewById(R.id.book_list);
-                        assert recyclerView != null;
-                        setupRecyclerView((RecyclerView) recyclerView);
-                        Toast.makeText(getApplicationContext(),"este mensaje",Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
 
-                });
+
+                       }
+
+                   });
+       }catch (Exception e){
+
+        }
+
 
 
 
@@ -189,6 +217,20 @@ public class BookListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.book_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+
+
+        if (ListaBooks.size()<=0){
+
+            Toast.makeText(this,"Es menor",Toast.LENGTH_SHORT).show();
+            onCreateDialog("Entrar").show();
+
+
+        }else{
+            Toast.makeText(this,"Es mayor",Toast.LENGTH_SHORT).show();
+
+
+        }
     }
 
 
@@ -217,9 +259,9 @@ public class BookListActivity extends AppCompatActivity {
                     almModel.add(md);
 
                 }
+                ListaBooksNew=almModel;
 
             }
-
 
 
             @Override
@@ -234,15 +276,50 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setupRecyclerView(@NonNull final RecyclerView recyclerView) {
+
+        try{
+            swipeRefreshLayout.setOnRefreshListener(
+                    new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+
+                            recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(BookListActivity.this, BookItem.ITEMS, mTwoPane));
+
+
+                            swipeRefreshLayout.setRefreshing(false);
+
+
+                           /* Intent i = getBaseContext().getPackageManager()
+                                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);*/
+
+                          //  onStop();
+
+                            //finish();
+                        //    onRestart();
+
+                        }
+
+
+                    });
+
+        }catch (Exception e){
+
+        }
+
+
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, BookItem.ITEMS, mTwoPane));
+
+
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final BookListActivity mParentActivity;
-        //private final List<BookItem.BookDetalle> mValues;
+
         private final List<BookItem.BookDetalle> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -323,7 +400,7 @@ public class BookListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).sTitulo);
             holder.mContentView.setText(mValues.get(position).sAutor);
-
+           // holder.
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
 
@@ -339,13 +416,13 @@ public class BookListActivity extends AppCompatActivity {
         //
         @Override
         public int getItemCount() {
-                    return mValues.size();
-          // return mValues.size();
+           return mValues.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
             final TextView mContentView;
+            //final ImageView mImgView;
 
             ViewHolder(View view) {
                 super(view);
@@ -464,7 +541,14 @@ public class BookListActivity extends AppCompatActivity {
             Toast.makeText(BookListActivity.this, "DesConectado",
                     Toast.LENGTH_SHORT).show();
             fab.setImageResource(R.drawable.ic_identificacion_no_verificada);
+
         }
+
+
+
+        //Toast.makeText(BookListActivity.this, "Des "+sCadena,
+              //  Toast.LENGTH_LONG).show();
+
     }
 
 
@@ -522,4 +606,97 @@ public class BookListActivity extends AppCompatActivity {
 
     }
     // [fin] Gestion BaseDatos SQLite
+
+
+
+
+    private void pvGuardarInicio() {
+
+
+        SQLiteDatabase db=conn.getWritableDatabase();
+
+
+
+
+        ListaBooksNew = almModel;
+
+        for (int i = 0;i <ListaBooksNew.size();i++){
+            ContentValues values=new ContentValues();
+
+
+            values.put(CampoTabla.BOOKS_sAUTHOR, ListaBooksNew.get(i).getAuthor());
+            values.put(CampoTabla.BOOKS_sDESCRIPTION, ListaBooksNew.get(i).getDescription());
+            values.put(CampoTabla.BOOKS_sPUBLICATION_DATE, ListaBooksNew.get(i).getPublication_date());
+            values.put(CampoTabla.BOOKS_sTITLE, ListaBooksNew.get(i).getTitle());
+            values.put(CampoTabla.BOOKS_sURL_IMAGE, ListaBooksNew.get(i).getUrl_image());
+
+
+            // variable para mostrar la posicion en que se ha guardado
+            Long idResultante=db.insert(CampoTabla.TABLA_BOOKS, CampoTabla.BOOKS_iID,values);
+        }
+
+
+
+
+        db.close();
+        Toast.makeText(getApplicationContext(),"Guardado TBL2 Registro: ",Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
+
+
+    //
+    public Dialog onCreateDialog(String savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        builder.setView(inflater.inflate(R.layout.dialog_inicio, null))
+                // Add action buttons
+                .setPositiveButton("Entrar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+
+                        Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
+                        intent.putExtra("DatoEnviado","inicioDialog");
+                        startActivity(intent);
+
+
+
+                    }
+                });
+
+
+        return builder.create();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();  // Always call the superclass method first
+
+        // Activity being restarted from stopped state
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();  // Always call the superclass method first
+
+        // Save the note's current draft, because the activity is stopping
+        // and we want to be sure the current note progress isn't lost.
+        ContentValues values = new ContentValues();
+        //values.put(NotePad.Notes.COLUMN_NAME_NOTE, getCurrentNoteText());
+       // values.put(NotePad.Notes.COLUMN_NAME_TITLE, getCurrentNoteTitle());
+
+     /*   getContentResolver().update(
+                mUri,    // The URI for the note to update.
+                values,  // The map of column names and new values to apply to them.
+                null,    // No SELECT criteria are used.
+                null     // No WHERE columns are used.
+        );/*/
+    }
+
 }

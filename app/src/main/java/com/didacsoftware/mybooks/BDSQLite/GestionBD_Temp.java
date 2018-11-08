@@ -42,6 +42,7 @@ public class GestionBD_Temp extends AppCompatActivity {
         setContentView(R.layout.activity_gestion_bd__temp);
 
 
+      //  this.sta
 
         conn=new ConexionSQLiteHelper(getApplicationContext(),"bd_basedatos",null,1);
 
@@ -86,17 +87,7 @@ public class GestionBD_Temp extends AppCompatActivity {
         });
 
 
-        btnBDConsultar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            //    pvConsultar();
 
-
-
-
-
-
-            }
-        });
 
 
 
@@ -109,44 +100,11 @@ public class GestionBD_Temp extends AppCompatActivity {
 
 
 
-        btnBDActualizar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-             //   pvActualizar();
-            }
-        });
 
-
-
-        btnBDEliminar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //  pvEliminar();
-            }
-        });
-
-        pvIniciar_btn();
-    }
-
-
-
-
-
-    private void pvIniciar_btn() {
-
-        btnBDConsultar.setAlpha((float) 1.0);
-
-
-        btnBDActualizar.setAlpha((float) 0.3);
-        btnBDActualizar.setText("Editar");
-        btnBDActualizar.setClickable(false);
-
-        btnBDGuardar.setAlpha((float) 1.0);
-        btnBDGuardar.setText("Nuevo");
-
-        btnBDEliminar.setAlpha((float) 0.3);
-        btnBDEliminar.setClickable(false);
 
 
     }
+
 
 
 
@@ -208,7 +166,7 @@ public class GestionBD_Temp extends AppCompatActivity {
 
 
 
-        ListaBooks = BookListActivity.ListaBooks;
+        ListaBooks = BookListActivity.ListaBooksNew;
 
         for (int i = 0;i <ListaBooks.size();i++){
             ContentValues values=new ContentValues();
