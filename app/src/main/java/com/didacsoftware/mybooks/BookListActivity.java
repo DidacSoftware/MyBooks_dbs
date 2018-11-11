@@ -56,15 +56,22 @@ public class BookListActivity extends AppCompatActivity {
 
     SwipeRefreshLayout swipeRefreshLayout;
 
+
+    // FB BaseDatos
     DatabaseReference dbr;
+    ArrayList<model> almModel;
+
     private FirebaseAuth mAuth;
 
-    ArrayList<model> almModel;
+
     ListView lsvLista;
+
 
     ConexionSQLiteHelper conn;
     ArrayList<String> DetalleBooks;
     public static ArrayList<model> ListaBooks;
+
+
     public static ArrayList<model> ListaBooksNew;
 
 
