@@ -1,13 +1,11 @@
 package com.didacsoftware.mybooks;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,33 +15,25 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
 import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
-import com.didacsoftware.mybooks.BDSQLite.GestionBD_Temp;
 import com.didacsoftware.mybooks.Model.BookItem;
 import com.didacsoftware.mybooks.Model.model;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,8 +41,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,8 +191,8 @@ public class BookListActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
 
-                Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
+               // startActivity(intent);
 
             }
         });
@@ -223,7 +211,7 @@ public class BookListActivity extends AppCompatActivity {
         if (ListaBooks.size()<=0){
 
             Toast.makeText(this,"Es menor",Toast.LENGTH_SHORT).show();
-            onCreateDialog("Entrar").show();
+           // onCreateDialog("Entrar").show();
 
 
         }else{
@@ -435,47 +423,6 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
-    // Menu principal [inicio]
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu_principal){
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu_principal);
-        return true;
-    }
-
-
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menu_seleccionado){
-        int iId = menu_seleccionado.getItemId();
-
-        if (iId == R.id.mnu_login){
-            Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        if (iId == R.id.mnu_configuracion){
-
-            return true;
-        }
-        if (iId == R.id.mnu_gestionar_bd){
-
-            Intent intent = new Intent(BookListActivity.this, GestionBD_Temp.class);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(menu_seleccionado);
-    }
-    // Menu principal [fin]
-
-
-
-
-
-
 
     // Mostrar notificacion local o enviado desde Firebase
     private void mostrarNotificacion(String title, String body) {
@@ -610,93 +557,6 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
-    private void pvGuardarInicio() {
 
-
-        SQLiteDatabase db=conn.getWritableDatabase();
-
-
-
-
-        ListaBooksNew = almModel;
-
-        for (int i = 0;i <ListaBooksNew.size();i++){
-            ContentValues values=new ContentValues();
-
-
-            values.put(CampoTabla.BOOKS_sAUTHOR, ListaBooksNew.get(i).getAuthor());
-            values.put(CampoTabla.BOOKS_sDESCRIPTION, ListaBooksNew.get(i).getDescription());
-            values.put(CampoTabla.BOOKS_sPUBLICATION_DATE, ListaBooksNew.get(i).getPublication_date());
-            values.put(CampoTabla.BOOKS_sTITLE, ListaBooksNew.get(i).getTitle());
-            values.put(CampoTabla.BOOKS_sURL_IMAGE, ListaBooksNew.get(i).getUrl_image());
-
-
-            // variable para mostrar la posicion en que se ha guardado
-            Long idResultante=db.insert(CampoTabla.TABLA_BOOKS, CampoTabla.BOOKS_iID,values);
-        }
-
-
-
-
-        db.close();
-        Toast.makeText(getApplicationContext(),"Guardado TBL2 Registro: ",Toast.LENGTH_SHORT).show();
-
-    }
-
-
-
-
-
-    //
-    public Dialog onCreateDialog(String savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-
-        builder.setView(inflater.inflate(R.layout.dialog_inicio, null))
-                // Add action buttons
-                .setPositiveButton("Entrar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-
-                        Intent intent = new Intent(BookListActivity.this, LoginActivity.class);
-                        intent.putExtra("DatoEnviado","inicioDialog");
-                        startActivity(intent);
-
-
-
-                    }
-                });
-
-
-        return builder.create();
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();  // Always call the superclass method first
-
-        // Activity being restarted from stopped state
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();  // Always call the superclass method first
-
-        // Save the note's current draft, because the activity is stopping
-        // and we want to be sure the current note progress isn't lost.
-        ContentValues values = new ContentValues();
-        //values.put(NotePad.Notes.COLUMN_NAME_NOTE, getCurrentNoteText());
-       // values.put(NotePad.Notes.COLUMN_NAME_TITLE, getCurrentNoteTitle());
-
-     /*   getContentResolver().update(
-                mUri,    // The URI for the note to update.
-                values,  // The map of column names and new values to apply to them.
-                null,    // No SELECT criteria are used.
-                null     // No WHERE columns are used.
-        );/*/
-    }
 
 }
