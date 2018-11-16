@@ -1,15 +1,21 @@
 package com.didacsoftware.mybooks;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import static android.content.Intent.ACTION_ATTACH_DATA;
+import static android.content.Intent.ACTION_DELETE;
 
 
 // prueba del  branch
@@ -56,6 +62,7 @@ public class BookDetailActivity extends AppCompatActivity {
                     .add(R.id.book_detail_container, fragment)
                     .commit();
         }
+
     }
 
 

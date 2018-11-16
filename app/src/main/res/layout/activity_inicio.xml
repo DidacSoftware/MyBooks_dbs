@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e5eafd"
-    android:padding="24dp"
-    tools:context=".InicioActivity">
+    tools:context=".InicioActivity"
+    tools:layout_editor_absoluteY="81dp">
 
     <ImageView
         android:id="@+id/inc_imgLogin"
-        android:layout_width="102dp"
+        android:layout_width="173dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="23dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/inc_edtEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,11 +24,11 @@
         android:id="@+id/inc_edtEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginLeft="54dp"
-        android:layout_marginRight="54dp"
-        android:layout_marginStart="54dp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginRight="42dp"
+        android:layout_marginStart="42dp"
         android:ems="10"
         android:hint="em@il"
         android:inputType="textEmailAddress"
@@ -41,11 +41,11 @@
         android:id="@+id/inc_edtContrasenha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginLeft="54dp"
-        android:layout_marginRight="54dp"
-        android:layout_marginStart="54dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginRight="42dp"
+        android:layout_marginStart="42dp"
         android:ems="10"
         android:hint="contraseña"
         android:inputType="textPassword"
@@ -58,7 +58,7 @@
         android:id="@+id/inc_btnLogin"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="23dp"
+        android:layout_marginBottom="9dp"
         android:text="Login"
         app:layout_constraintBottom_toTopOf="@+id/inc_btnRegistrar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,21 +69,45 @@
         android:id="@+id/inc_btnRegistrar"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="33dp"
+        android:layout_marginBottom="14dp"
         android:text="Registrar"
-        app:layout_constraintBottom_toTopOf="@+id/inc_btnIr"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inc_btnLogin" />
 
-    <Button
-        android:id="@+id/inc_btnIr"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="34dp"
-        android:text="Ir a Lista de Libros"
+        android:layout_height="82dp"
+        android:layout_marginBottom="11dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inc_btnRegistrar" />
+        app:layout_constraintTop_toBottomOf="@+id/inc_btnRegistrar">
+
+        <Button
+            android:id="@+id/inc_btnIr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="34dp"
+            android:layout_weight="1"
+            android:text="Ir a Lista de Libros"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inc_btnRegistrar" />
+
+        <Button
+            android:id="@+id/inc_btnNotificacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Prueba de Notifiacion" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

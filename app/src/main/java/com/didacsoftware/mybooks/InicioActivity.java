@@ -1,12 +1,22 @@
 package com.didacsoftware.mybooks;
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,11 +40,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.content.Intent.ACTION_ATTACH_DATA;
+import static android.content.Intent.ACTION_DELETE;
+
 public class InicioActivity extends AppCompatActivity {
 
 
 
-    Button btnLogin, btnRegistrar, btnIr;
+    Button btnLogin, btnRegistrar, btnIr,btnNotificacion;
     EditText edtCorreo, edtContrasenha;
     ImageView imgLogin;
 
@@ -74,6 +87,7 @@ public class InicioActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.inc_btnLogin);
         btnRegistrar = findViewById(R.id.inc_btnRegistrar);
         btnIr = findViewById(R.id.inc_btnIr);
+        btnNotificacion = findViewById(R.id.inc_btnNotificacion);
 
         edtCorreo = findViewById(R.id.inc_edtEmail);
         edtContrasenha = findViewById(R.id.inc_edtContrasenha);
@@ -118,7 +132,14 @@ public class InicioActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
+/*
+        if (getIntent().getExtras()!=null){
+            for(String key:getIntent().getExtras().keySet()){
+                String value = getIntent().getExtras().getString(key);
+                edtCorreo.append("\n"+ key + " : " + value);
 
+            }
+        }*/
 
 
 
@@ -179,7 +200,7 @@ public class InicioActivity extends AppCompatActivity {
 
                 consultarListaSQLite();
 
-                if (almModel.size()!=ListaSQLite.size()){
+                if (almModel.size()!=ListaSQLite.size() && ListaSQLite.size()<=0){
 
 
                     //int fb =almModel.size();
@@ -190,8 +211,12 @@ public class InicioActivity extends AppCompatActivity {
 
                     pvGuardarSQLite();
 
+                   //
+
                 }
 
+
+                //Intent intent = new Intent(InicioActivity.this,MostrarDetalle.class);
 
                 Intent intent = new Intent(InicioActivity.this,BookListActivity.class);
                 InicioActivity.this.startActivity(intent);
@@ -200,8 +225,51 @@ public class InicioActivity extends AppCompatActivity {
         });
 
 
+        // Abrir Lista de Libros
+        btnNotificacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mostrarNotificacion("Se elimina o se borra un libro","2","elimina o se borra un libro");
+                //Intent intent = new Intent(InicioActivity.this,BookListActivity.class);
+                //InicioActivity.this.startActivity(intent);
+
+            }
+        });
 
 
+
+
+        // mensaje fB prueba
+        if (getIntent().getExtras() !=null){
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            //notificationManager.cancel(0);
+            if (getIntent().getAction()== ACTION_DELETE){
+                Log.d("BookListActivity","bookDelete");
+
+                //Toast.makeText(InicioActivity.this, "book_Eliminar",
+                 //       Toast.LENGTH_SHORT).show();
+                pvEliminar("2");
+            }
+            if (getIntent().getAction()== ACTION_ATTACH_DATA){
+                Log.d("BookListActivity","book_MOSTRAR");
+
+                Toast.makeText(InicioActivity.this, "book_MOSTRAR",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            for(String key : getIntent().getExtras().keySet()){
+                Object value = getIntent().getExtras().get(key);
+                Log.d("BookListActivity","Key: "+key+"value : "+value);
+            }
+
+
+
+        }else {
+            Toast.makeText(InicioActivity.this, "BookListActivity",
+                    Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -375,6 +443,74 @@ public class InicioActivity extends AppCompatActivity {
 
     }
 
+
+
+    // Mostrar notificacion local o enviado desde Firebase
+    private void mostrarNotificacion(String title, String book_position, String body) {
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+
+
+
+        // Necesario para versiones anteriores
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "esta notificacion", NotificationManager.IMPORTANCE_MAX);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Parte Channel");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+
+
+
+
+
+
+        Intent intent = new Intent(this, InicioActivity.class);
+        intent.setAction(ACTION_DELETE);
+        intent.putExtra("book_position",book_position);
+
+        PendingIntent borrarIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        Intent intent2 = new Intent(this, MostrarDetalle.class);
+        intent2.setAction(ACTION_ATTACH_DATA);
+        intent2.putExtra("accion","MOSTRAR");
+        PendingIntent resendIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent2, 0);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.libros_en_pila)
+                        .setContentTitle(title)
+                        .setContentText("MyBooks_dbs")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("El libro que se va a eliminar o mostrar esta en la posicion: "+book_position))
+                        .addAction(new NotificationCompat.Action(R.drawable.ic_launcher_foreground, "Borrar", borrarIntent))
+                        .addAction(new NotificationCompat.Action(R.drawable.ic_launcher_foreground, "Mostrar", resendIntent));
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // Mostrar la notificación
+        mNotificationManager.notify(0, mBuilder.build());
+
+
+    }
+
+    private void pvEliminar(String iId) {
+
+        SQLiteDatabase db=conn.getReadableDatabase();
+
+
+            db.delete(CampoTabla.TABLA_BOOKS, CampoTabla.BOOKS_iID+"="+iId, null);
+
+            Toast.makeText(getApplicationContext(),"El libro de la posicion "+iId+" ha sido Eliminado",Toast.LENGTH_LONG).show();
+
+
+    }
 
 
 
