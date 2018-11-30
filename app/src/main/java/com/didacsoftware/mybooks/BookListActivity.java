@@ -243,7 +243,8 @@ public class BookListActivity extends AppCompatActivity {
 
 
 
-        }
+        // fin onCreate
+    }
 
 
 
@@ -386,7 +387,7 @@ public class BookListActivity extends AppCompatActivity {
                     .inflate(R.layout.book_list_content_impar, parent, false);
 
             // View return para definir pares o impares
-            View viewReturn=viewImpar;;
+            View viewReturn=viewImpar;
 
 
 

@@ -35,7 +35,9 @@ public class BookItem {
     public static final Map<String, BookDetalle> ITEM_MAP = new HashMap<String, BookDetalle>();
 
 
-    static BookListActivity alListaBooks;
+    // old booklist
+    //static BookListActivity alListaBooks;
+    static BookListNavDraw alListaBooks;
     //public static List<model> alModel;
 
 
