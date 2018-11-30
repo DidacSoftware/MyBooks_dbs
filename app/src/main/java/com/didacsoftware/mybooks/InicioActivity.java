@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
 import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
+import com.didacsoftware.mybooks.Model.BookListNavDraw;
 import com.didacsoftware.mybooks.Model.model;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -173,7 +174,7 @@ public class InicioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+/*
                 try {
                     String email = edtCorreo.getText().toString();
 
@@ -185,6 +186,10 @@ public class InicioActivity extends AppCompatActivity {
                     Toast.makeText(InicioActivity.this, "Correo electronico o contraseñas incorrectos",
                             Toast.LENGTH_SHORT).show();
                 }
+*/
+
+                Intent intent = new Intent(InicioActivity.this,BookListNavDraw.class);
+                InicioActivity.this.startActivity(intent);
 
             }
         });

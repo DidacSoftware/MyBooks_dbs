@@ -52,6 +52,10 @@
         <activity
             android:name=".MostrarDetalle"
             android:label="@string/title_activity_mostrar_detalle"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Model.BookListNavDraw"
+            android:label="@string/title_activity_book_list_nav_draw"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
