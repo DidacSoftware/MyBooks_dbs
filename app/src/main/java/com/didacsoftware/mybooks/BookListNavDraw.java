@@ -1,20 +1,27 @@
-package com.didacsoftware.mybooks.Model;
+package com.didacsoftware.mybooks;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,10 +42,8 @@ import android.widget.Toast;
 
 import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
 import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
-import com.didacsoftware.mybooks.BookDetailActivity;
-import com.didacsoftware.mybooks.BookDetailFragment;
-import com.didacsoftware.mybooks.BookListActivity;
-import com.didacsoftware.mybooks.R;
+import com.didacsoftware.mybooks.Model.BookItem;
+import com.didacsoftware.mybooks.Model.model;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -47,12 +52,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Intent.ACTION_ATTACH_DATA;
 import static android.content.Intent.ACTION_DELETE;
 
+
+// envir por sociales
 public class BookListNavDraw extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private boolean mTwoPane;
@@ -78,6 +87,8 @@ public class BookListNavDraw extends AppCompatActivity
 
 
     ImageView imgFoto;
+    TextView txvUsuario, txvEmail;
+
 
 
     @Override
@@ -103,6 +114,7 @@ public class BookListNavDraw extends AppCompatActivity
 
 
 
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
@@ -119,7 +131,16 @@ public class BookListNavDraw extends AppCompatActivity
 
         View navHeader = navigationView.getHeaderView(0);
         imgFoto = navHeader.findViewById(R.id.nvd_imgFoto);
+        txvUsuario = navHeader.findViewById(R.id.nvd_txvUsuario);
+        txvEmail = navHeader.findViewById(R.id.nvd_txvCorreo);
+
+
+
         imgFoto.setImageResource(R.drawable.ic_identificacion_no_verificada);
+        txvUsuario.setText(Global.sUsuario);
+        txvEmail.setText(Global.sEmail);
+
+
         //inicio codigo copiado
 
 
@@ -223,6 +244,20 @@ public class BookListNavDraw extends AppCompatActivity
 
         if (findViewById(R.id.book_detail_container) != null) {
 
+            fab.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View view) {
+                                           Snackbar.make(view, "Transaccion", Snackbar.LENGTH_LONG)
+                                                   .setAction("Action", null).show();
+
+
+                                           Intent intent = new Intent(getApplicationContext(),WebViewForm.class);
+                                           startActivity(intent);
+
+                                       }
+            });
+
+            fab.setImageResource(R.drawable.transaccion);
             mTwoPane = true;
         }
 
@@ -293,12 +328,20 @@ public class BookListNavDraw extends AppCompatActivity
         }
     }
 
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.book_list_nav_draw, menu);
         return true;
     }
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -309,11 +352,19 @@ public class BookListNavDraw extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //Toast.makeText(BookListNavDraw.this,"Hola settin",Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(BookListNavDraw.this, InicioActivity.class);
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -322,10 +373,26 @@ public class BookListNavDraw extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_share) {
-            // Handle the camera action
-        } else if (id == R.id.nav_share) {
+
+            /*
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            Intent chooser = Intent.createChooser(intent, "Compartir con...");
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }*/
+            compartirImatge();
+
+        } else if (id == R.id.nav_copy) {
+
+            pv_CopiarTxtPortapapeles("label", txvUsuario.getText().toString());
 
         } else if (id == R.id.nav_send) {
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT,  txvUsuario.getText().toString());
+            i.setPackage("com.whatsapp");
+            startActivity(i);
 
         }
 
@@ -595,18 +662,28 @@ public class BookListNavDraw extends AppCompatActivity
         final FloatingActionButton fab = findViewById(R.id.fab);
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser!=null){
-
-            Toast.makeText(BookListNavDraw.this, "Conectado",
-                    Toast.LENGTH_SHORT).show();
-            fab.setImageResource(R.drawable.ic_identificacion_verificada);
+        if (mTwoPane){
+            fab.setImageResource(R.drawable.transaccion);
 
         }else{
-            //   Toast.makeText(BookListNavDraw.this, "DesConectado",
-            //        Toast.LENGTH_SHORT).show();
-            fab.setImageResource(R.drawable.ic_identificacion_no_verificada);
+            if (currentUser!=null){
 
+                Toast.makeText(BookListNavDraw.this, "Conectado",
+                        Toast.LENGTH_SHORT).show();
+                fab.setImageResource(R.drawable.ic_identificacion_verificada);
+                imgFoto.setImageResource(R.drawable.ic_identificacion_verificada);
+                //txvUsuario.setText(Global.sUsuario);
+
+            }else{
+                //   Toast.makeText(BookListNavDraw.this, "DesConectado",
+                //        Toast.LENGTH_SHORT).show();
+                fab.setImageResource(R.drawable.ic_identificacion_no_verificada);
+                imgFoto.setImageResource(R.drawable.ic_identificacion_no_verificada);
+
+            }
         }
+
+
 
 
 
@@ -685,6 +762,67 @@ public class BookListNavDraw extends AppCompatActivity
 
 
 
+    // Copiar texto en portapapeles
+    private void pv_CopiarTxtPortapapeles(String sLabel, String sTexto){
+
+        ClipData clip = ClipData.newPlainText(sLabel, sTexto);
+        ClipboardManager clipboard = (ClipboardManager)this.getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(getApplicationContext(),"Copiado a portapeles \n"+sTexto,Toast.LENGTH_LONG).show();
+
+    }
+
+
+
+
+
+    // Enviar texto y imagen por sociales
+    private void compartirImatge() {
+
+
+        Uri imatgeAEnviar = prepararImatge();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, txvUsuario.getText().toString());
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imatgeAEnviar);
+        shareIntent.setType("image/jpeg");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareIntent, "send"));
+
+    }
+
+
+    private Uri prepararImatge() {
+
+        Drawable drawable= getResources().getDrawable(R.drawable.ic_identificacion_verificada);
+/*
+        if (Global.sUsuario == "Usuario_"){
+            drawable = getResources().getDrawable(R.drawable.ic_identificacion_no_verificada);
+        }else{
+            drawable = getResources().getDrawable(R.drawable.ic_identificacion_verificada);
+        }*/
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        File imagePath = new File(getFilesDir(), "temporal");
+        imagePath.mkdir();
+        File imageFile = new File(imagePath.getPath(), "ic_identificacion_verificada.png");
+
+        try {
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return FileProvider.getUriForFile(getApplicationContext(), getPackageName(), imageFile);
+
+    }
 
 
 }

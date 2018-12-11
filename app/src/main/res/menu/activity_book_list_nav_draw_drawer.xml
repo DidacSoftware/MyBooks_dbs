@@ -8,16 +8,17 @@
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
             android:title="Share all" />
+        <item
+            android:id="@+id/nav_copy"
+            android:icon="@drawable/copy"
+            android:title="Copy" />
 
         <item
             android:id="@+id/nav_send"
             android:icon="@drawable/ic_whatsapp"
             android:title="Share whatsapp" />
 
-        <item
-            android:id="@+id/nav_copy"
-            android:icon="@drawable/copy"
-            android:title="Copy" />
+
     </group>
 
 

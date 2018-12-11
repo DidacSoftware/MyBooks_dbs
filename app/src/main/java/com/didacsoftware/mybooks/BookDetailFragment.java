@@ -1,13 +1,17 @@
 package com.didacsoftware.mybooks;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +51,11 @@ public class BookDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
+
+
         if (getArguments().containsKey(ARG_ITEM_ID)) {
 
             mItem = BookItem.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
@@ -57,6 +66,10 @@ public class BookDetailFragment extends Fragment {
                 appBarLayout.setTitle(mItem.sTitulo);
             }
         }
+
+
+
+
     }
 
 
@@ -68,6 +81,8 @@ public class BookDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.book_detail, container, false);
+
+
 
 
 

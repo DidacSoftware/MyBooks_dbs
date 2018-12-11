@@ -1,13 +1,15 @@
 package com.didacsoftware.mybooks;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -20,13 +22,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
 import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
-import com.didacsoftware.mybooks.Model.BookListNavDraw;
 import com.didacsoftware.mybooks.Model.model;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,7 +54,7 @@ public class InicioActivity extends AppCompatActivity {
     EditText edtCorreo, edtContrasenha;
     ImageView imgLogin;
 
-
+    CheckBox chb_chbCheckBox;
 
     // FB Login
     private FirebaseAuth mAuth;
@@ -95,7 +97,15 @@ public class InicioActivity extends AppCompatActivity {
 
         imgLogin = findViewById(R.id.inc_imgLogin);
 
+        chb_chbCheckBox = findViewById(R.id.chb_chbCheckBox);
 
+
+        chb_chbCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isCheck();
+            }
+        });
 
 
 
@@ -127,6 +137,17 @@ public class InicioActivity extends AppCompatActivity {
                             +almModel.get(i).getDescription()+"\n"+almModel.get(i).getTitle());
                 }
 
+                try {
+
+                    Toast.makeText(InicioActivity.this, "almModel  datos "+almModel.size(),
+                            Toast.LENGTH_SHORT).show();
+
+                }catch (Exception e){
+
+                    Toast.makeText(InicioActivity.this, "almModel si datos",
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -156,6 +177,8 @@ public class InicioActivity extends AppCompatActivity {
 
                     login(email,password);
 
+                    pv_Preferencias("Guardar");
+
                 }catch (Exception e){
 
                     Toast.makeText(InicioActivity.this, "Correo electronico o contraseñas incorrectos",
@@ -174,7 +197,7 @@ public class InicioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-/*
+
                 try {
                     String email = edtCorreo.getText().toString();
 
@@ -186,10 +209,7 @@ public class InicioActivity extends AppCompatActivity {
                     Toast.makeText(InicioActivity.this, "Correo electronico o contraseñas incorrectos",
                             Toast.LENGTH_SHORT).show();
                 }
-*/
 
-                Intent intent = new Intent(InicioActivity.this,BookListNavDraw.class);
-                InicioActivity.this.startActivity(intent);
 
             }
         });
@@ -208,22 +228,16 @@ public class InicioActivity extends AppCompatActivity {
                 if (almModel.size()!=ListaSQLite.size() && ListaSQLite.size()<=0){
 
 
-                    //int fb =almModel.size();
-                    //int sq =ListaSQLite.size();
 
-                   // Toast.makeText(InicioActivity.this, "difer "+fb+"  sq "+sq,
-                    //        Toast.LENGTH_SHORT).show();
 
                     pvGuardarSQLite();
 
-                   //
+
 
                 }
 
 
-                //Intent intent = new Intent(InicioActivity.this,MostrarDetalle.class);
-
-                Intent intent = new Intent(InicioActivity.this,BookListActivity.class);
+                Intent intent = new Intent(InicioActivity.this,BookListNavDraw.class);
                 InicioActivity.this.startActivity(intent);
 
             }
@@ -235,9 +249,11 @@ public class InicioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 mostrarNotificacion("Se elimina o se borra un libro","2","elimina o se borra un libro");
-                //Intent intent = new Intent(InicioActivity.this,BookListActivity.class);
-                //InicioActivity.this.startActivity(intent);
+
+
+
 
             }
         });
@@ -277,6 +293,9 @@ public class InicioActivity extends AppCompatActivity {
         }
 
 
+
+        //btnRegistrar.setText(String.valueOf(almModel.size()));
+
     }
     //[fin OnCreate]
 
@@ -298,6 +317,9 @@ public class InicioActivity extends AppCompatActivity {
 
             // cambiar imagen de login
             imgLogin.setImageResource(R.drawable.ic_identificacion_verificada);
+
+
+            pv_Preferencias("Cargar");
 
 
         }else{
@@ -518,5 +540,89 @@ public class InicioActivity extends AppCompatActivity {
     }
 
 
+    private void pv_Preferencias(String sAccion){
+
+        SharedPreferences preferencias = getSharedPreferences
+                ("configuracion", Context.MODE_PRIVATE);
+
+
+        if (sAccion == "Guardar"){
+            String sEmail = edtCorreo.getText().toString();
+
+
+
+            int iEndIndex=0;
+
+            String cCaracter;
+            for (int i=0;i<sEmail.length();i++){
+
+                 cCaracter = String.valueOf(sEmail.charAt(i));
+
+                if(cCaracter.equals("@")){
+
+                    iEndIndex=i;
+                }
+
+
+        }
+
+
+
+            String sUsuario = sEmail.substring(0,iEndIndex);
+
+
+            SharedPreferences.Editor editor = preferencias.edit();
+
+            editor.putString("inicio","iniciado");
+            editor.putString("usuario",sUsuario);
+            editor.putString("email",sEmail);
+
+
+
+            editor.commit();
+
+
+        }else{if (sAccion == "Cargar"){
+
+            //                                                      si no existe
+            String sInicio = preferencias.getString("inicio","no exite");
+            String sUsuario = preferencias.getString("usuario","no exite");
+            String sEmail = preferencias.getString("email","no exite");
+
+            Global.sUsuario=sUsuario;
+            Global.sEmail=sEmail;
+
+
+            }
+
+        }
+
+    }
+
+
+    private void pv_CopiarTxtPortapapeles(String sLabel, String sTexto){
+
+        ClipData clip = ClipData.newPlainText(sLabel, sTexto);
+        ClipboardManager clipboard = (ClipboardManager)this.getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(clip);
+
+    }
+
+
+    private void isCheck() {
+        if (!chb_chbCheckBox.isChecked()){
+
+            chb_chbCheckBox.setText("No Mostrar ventana de inicio");
+
+        }else{
+            if (chb_chbCheckBox.isChecked()){
+
+                chb_chbCheckBox.setText("Mostrar ventana de inicio");
+
+            }
+        }
+
+
+    }
 
 }

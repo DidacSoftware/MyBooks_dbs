@@ -2,18 +2,7 @@ package com.didacsoftware.mybooks.Model;
 
 
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
-
-import com.didacsoftware.mybooks.BDSQLite.CampoTabla;
-import com.didacsoftware.mybooks.BDSQLite.ConexionSQLiteHelper;
-import com.didacsoftware.mybooks.BookListActivity;
-import com.didacsoftware.mybooks.Global;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.didacsoftware.mybooks.BookListNavDraw;
 
 import java.util.ArrayList;
 import java.util.Date;

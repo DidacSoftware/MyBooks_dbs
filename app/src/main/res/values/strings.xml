@@ -93,7 +93,7 @@
     </string>
 
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Inicio</string>
     <string name="title_activity_book_list_nav_draw">BookListNavDraw</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

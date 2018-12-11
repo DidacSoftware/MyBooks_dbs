@@ -6,13 +6,12 @@
     android:layout_height="match_parent"
     android:background="#e5eafd"
     tools:context=".InicioActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="89dp">
 
     <ImageView
         android:id="@+id/inc_imgLogin"
         android:layout_width="173dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="12dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/inc_edtEmail"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,32 +23,30 @@
         android:id="@+id/inc_edtEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="9dp"
-        android:layout_marginEnd="42dp"
-        android:layout_marginLeft="42dp"
-        android:layout_marginRight="42dp"
-        android:layout_marginStart="42dp"
+        android:layout_marginBottom="288dp"
+        android:layout_marginEnd="41dp"
+        android:layout_marginLeft="41dp"
+        android:layout_marginRight="41dp"
+        android:layout_marginStart="41dp"
         android:ems="10"
         android:hint="em@il"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/inc_edtContrasenha"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inc_imgLogin" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/inc_edtContrasenha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="42dp"
-        android:layout_marginLeft="42dp"
-        android:layout_marginRight="42dp"
-        android:layout_marginStart="42dp"
+        android:layout_marginEnd="41dp"
+        android:layout_marginLeft="41dp"
+        android:layout_marginRight="41dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="contraseña"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/inc_btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inc_edtEmail" />
@@ -58,9 +55,8 @@
         android:id="@+id/inc_btnLogin"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="9dp"
+        android:layout_marginTop="9dp"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/inc_btnRegistrar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inc_edtContrasenha" />
@@ -69,9 +65,8 @@
         android:id="@+id/inc_btnRegistrar"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
+        android:layout_marginTop="10dp"
         android:text="Registrar"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inc_btnLogin" />
@@ -79,12 +74,9 @@
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
-        android:layout_height="82dp"
-        android:layout_marginBottom="11dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -109,5 +101,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Prueba de Notifiacion" />
+
+
     </LinearLayout>
+
+
+    <CheckBox
+        android:id="@+id/chb_chbCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Mostrar ventana de inicio"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

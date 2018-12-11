@@ -54,9 +54,21 @@
             android:label="@string/title_activity_mostrar_detalle"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Model.BookListNavDraw"
+            android:name=".BookListNavDraw"
             android:label="@string/title_activity_book_list_nav_draw"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.didacsoftware.mybooks"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/my_paths" />
+        </provider>
+
+        <activity android:name=".WebViewForm"></activity>
     </application>
 
 </manifest>
