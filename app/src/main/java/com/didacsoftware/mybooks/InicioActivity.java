@@ -178,6 +178,7 @@ public class InicioActivity extends AppCompatActivity {
                     login(email,password);
 
                     pv_Preferencias("Guardar");
+                    pv_Preferencias("Cargar");
 
                 }catch (Exception e){
 
